@@ -127,6 +127,84 @@ class UserView {
       });
   }
 
+  static async updateAnUser() {
+    await inquirer
+      .prompt([
+        {
+          name: "userID",
+          message: "Qual o ID do usuário que deseja atualizar?",
+          type: "number",
+        },
+      ])
+      .then(async (answers) => {
+        const updatedUser = await UserController.listByID(answers.userID);
+
+        if (updatedUser) {
+          await inquirer
+            .prompt([
+              {
+                name: "newUserName",
+                message: "Digite o novo nome para o usuário: ",
+                type: "input",
+              },
+              {
+                name: "newUserEmail",
+                message: "Digite o novo email para o usuário: ",
+                type: "input",
+              },
+              {
+                name: "newUserPassword",
+                message: "Digite a nova senha do usuário: ",
+                type: "password",
+                mask: true,
+              },
+              {
+                name: "newUserPasswordConfirm",
+                message: "Confirme a senha do usuário.",
+                type: "password",
+                mask: true,
+              },
+            ])
+            .then(async (answers) => {
+              console.log(chalk.blue("Usuário encontrado!"));
+
+              if (
+                answers.newUserName === "" ||
+                answers.newUserEmail === "" ||
+                answers.newUserPassword === "" ||
+                answers.newUserPasswordConfirm === "" ||
+                answers === undefined
+              ) {
+                throw new CamposVazios(
+                  chalk.red("É preciso preencher corretamente todos os campos!")
+                );
+              } else {
+                if (answers.newUserPassword === answers.newUserPasswordConfirm) {
+                  updatedUser.name = answers.newUserName;
+                  updatedUser.email = answers.newUserEmail;
+                  updatedUser.password = answers.newUserPassword;
+
+                  await UserController.updateUser(updatedUser);
+
+                  console.log(chalk.green("Usuário atualizado com sucesso!"));
+                } else {
+                  throw new SenhasDiferentes(
+                    chalk.red("As senhas inseridas devem ser iguais.")
+                  );
+                }
+              }
+            });
+        } else {
+          throw new UsuarioInexistente(
+            chalk.red("O usuário não foi encontrado! Tente novamente!")
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("Erro encontrado: ", error.message);
+      });
+  }
+
 }
 
 export { UserView };

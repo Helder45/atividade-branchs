@@ -14,10 +14,15 @@ export class UserController {
       const user = await listById(userId);
       return user;
     }
+
+    static async updateUser(user: users): Promise<void> {
+      await updateUser(user);
+    }
 }
 
 import {
   createUser,
   listAllUsers,
   listById,
+  updateUser
 } from "../database/userDB";
