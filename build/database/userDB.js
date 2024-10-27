@@ -9,3 +9,4 @@ const createUser = async (user) => {
         },
     });
 };
+export { createUser };
