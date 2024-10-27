@@ -15,4 +15,13 @@ class SenhasDiferentes extends Error {
     }
 }
 
-export { CamposVazios, SenhasDiferentes };
+class UsuarioInexistente extends Error {
+    constructor(msg: any) {
+        super(msg);
+        this.name = chalk.red("Erro de usuário não encontrado: ");
+
+    }
+}
+
+
+export { CamposVazios, SenhasDiferentes, UsuarioInexistente };
