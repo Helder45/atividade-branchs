@@ -1,4 +1,4 @@
-export class Usercontroller {
+export class UserController {
     static async createUser(user) {
         await createUser(user);
     }
