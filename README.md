@@ -1,4 +1,4 @@
-# git_lesson
+# atividade-branchs
 Just to learn a few things about git and github
 
 1. Adicionar 5 funcionalidades
