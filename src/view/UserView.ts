@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
-import { CamposVazios, SenhasDiferentes } from "../Erros.js";
+import { CamposVazios, SenhasDiferentes, UsuarioInexistente } from "../Erros.js";
 import { users } from "@prisma/client";
 import { UserController } from "../controller/UserController.js";
 
@@ -71,6 +71,62 @@ class UserView {
         console.log(error.message);
       });
   }
+
+  static async listAllUsersOnDatabase() {
+    const usersList: users[] = await UserController.listAll();
+    console.log("Lista de usuários:");
+    for (let user of usersList) {
+      console.log(
+        "ID:",
+        user.id,
+        "\nNome de usuário:",
+        user.name,
+        "\nEmail do usuário:",
+        user.email,
+        "\nSenha do usuário:",
+        user.password,
+        "\n----------------"
+      );
+    }
+  }
+
+  static async listAnUserById() {
+    await inquirer
+      .prompt([
+        {
+          name: "userID",
+          message: "Qual o ID do usuário que deseja listar?",
+          type: "number",
+        },
+      ])
+      .then(async (answers) => {
+        if (
+          answers === undefined ||
+          answers.userID === null ||
+          answers.userID === ""
+        ) {
+          throw new CamposVazios(
+            chalk.red("O campo não pode estar vazio! Tente novamente!")
+          );
+        } else {
+          const listedUser = await UserController.listByID(answers.userID);
+
+          if (listedUser) {
+            console.log(chalk.blue("Usuário encontrado!"));
+
+            console.table({ listedUser });
+          } else {
+            throw new UsuarioInexistente(
+              chalk.red("O usuário não foi encontrado! Tente novamente!")
+            );
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("Erro encontrado: ", error.message);
+      });
+  }
+
 }
 
 export { UserView };

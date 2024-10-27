@@ -11,6 +11,22 @@ const createUser = async (user: users) => {
     });
   };
 
+  const listAllUsers = async () => {
+    const usuarios = await prisma.users.findMany();
+    return usuarios;
+  };
+
+  const listById = async (userId: number): Promise<users | null> => {
+    const user = await prisma.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    return user;
+  };
+
 export {
-    createUser
+    createUser,
+    listAllUsers,
+    listById
 };
