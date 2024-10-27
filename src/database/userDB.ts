@@ -10,3 +10,7 @@ const createUser = async (user: users) => {
       },
     });
   };
+
+export {
+    createUser
+};
